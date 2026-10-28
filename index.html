@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriFit | منصة التغذية والسعرات الحرارية العصرية</title>
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo & Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --neon-green: #10b981;
+            --neon-blue: #06b6d4;
+            --neon-pink: #ec4899;
+            --neon-amber: #f59e0b;
+            --text-light: #ffffff; /* تم التعديل إلى أبيض ناصع */
+            --text-muted: #cbd5e1; /* تم تفتيح لون النصوص الثانوية لتكون واضحة تماماً */
+            --border-glass: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+            padding-bottom: 50px;
+        }
+
+        /* Glassmorphism Navbar */
+        .navbar-custom {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+            --webkit-background-clip: text;
+            --webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            color: #e2e8f0 !important;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-radius: 8px;
+            padding: 8px 16px !important;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--neon-green) !important;
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        /* Cards and Containers */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff; /* عناوين الأقسام باللون الأبيض الواضح والصريح */
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .section-title i {
+            color: var(--neon-green);
+        }
+
+        /* Form Controls */
+        .form-label {
+            color: #ffffff !important; /* عناوين الحقول باللون الأبيض */
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: var(--neon-green);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Buttons */
+        .btn-neon-green {
+            background: linear-gradient(135deg, var(--neon-green), #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-neon-green:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+            color: white;
+        }
+
+        /* Metric Counters */
+        .stat-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-glass);
+        }
+
+        .stat-box .text-muted {
+            color: #e2e8f0 !important;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+            --webkit-background-clip: text;
+            --webkit-text-fill-color: transparent;
+        }
+
+        /* Chat Widget */
+        .chat-box {
+            height: 350px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            margin-bottom: 15px;
+        }
+
+        .chat-msg {
+            margin-bottom: 12px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            color: #ffffff;
+        }
+
+        .chat-msg.bot {
+            background: rgba(6, 182, 212, 0.25);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            align-self: flex-start;
+            border-top-right-radius: 2px;
+        }
+
+        .chat-msg.user {
+            background: rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            margin-right: auto;
+            border-top-left-radius: 2px;
+        }
+
+        /* Blog Tags & Interactive Cards */
+        .blog-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            overflow: hidden;
+            height: 100%;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.25);
+        }
+
+        .blog-card h5 {
+            color: #ffffff !important; /* عناوين المقالات في الكروت أبيض صريح */
+            font-weight: 800;
+        }
+
+        .blog-card p {
+            color: #e2e8f0 !important; /* نصوص الوصف في الكروت بيضاء واضحة */
+        }
+
+        .tag-badge {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .tag-weight-loss { background: rgba(236, 72, 153, 0.25); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.5); }
+        .tag-weight-gain { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
+        .tag-healthy { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); }
+
+        /* Review Items */
+        .review-item {
+            border-right: 3px solid var(--neon-green);
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 15px;
+        }
+
+        .review-item p {
+            color: #ffffff !important;
+        }
+
+        /* Custom Modal Styling */
+        .modal-content.glass-card {
+            background: rgba(15, 23, 42, 0.96) !important;
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .modal-body h5 {
+            color: var(--neon-green);
+            margin-top: 15px;
+            font-weight: 700;
+        }
+
+        .modal-body p {
+            color: #ffffff;
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fa-solid fa-bolt me-2"></i>NutriFit Modern</a>
+            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-2">
+                    <li class="nav-item"><a class="nav-link active" href="#calc-section"><i class="fa-solid fa-calculator me-1"></i> الحاسبة</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#chat-section"><i class="fa-solid fa-comments me-1"></i> المساعد الفوري</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#blogs-section"><i class="fa-solid fa-book-open me-1"></i> المدونة والمقالات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reviews-section"><i class="fa-solid fa-users me-1"></i> التجارب والآراء</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <!-- Calculator & Meals Section -->
+        <section id="calc-section" class="mb-5">
+            <div class="row">
+                <!-- Form Container -->
+                <div class="col-lg-5">
+                    <div class="glass-card">
+                        <div class="section-title">
+                            <i class="fa-solid fa-fire text-danger"></i>
+                            <span>إضافة وجبة أو مشروب</span>
+                        </div>
+                        <form id="calc-form">
+                            <div class="mb-3">
+                                <label class="form-label">التصنيف الرئيسي:</label>
+                                <select id="category-filter" class="form-select">
+                                    <option value="all">🚀 جميع التصنيفات</option>
+                                    <option value="carbs">🍚 الأرز والنشويات والخبز (موسّع)</option>
+                                    <option value="fruits">🍎 الفواكه الطازجة والطبيعية</option>
+                                    <option value="coffee">☕ القهوة والمشروبات الساخنة</option>
+                                    <option value="drinks">🧃 العصائر والمشروبات الباردة</option>
+                                    <option value="poultry">🍗 الطيور والدواجن واللحوم</option>
+                                    <option value="sweets">🍰 الكيك والحلويات</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">بحث سريع عن صنف:</label>
+                                <input type="text" id="search-input" class="form-control" placeholder="ابحثي عن: أرز، تفاح، بطاطس، قهوة...">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">اختر الصنف من القائمة:</label>
+                                <select id="food-select" class="form-select" size="4" style="height: 120px;" required></select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">طريقة التقدير:</label>
+                                <div class="d-flex gap-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="calc-mode" id="mode-grams" value="grams" checked>
+                                        <label class="form-check-label text-white" for="mode-grams">بالجرام / المللي</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="calc-mode" id="mode-portion" value="portion">
+                                        <label class="form-check-label text-white" for="mode-portion">بالحصة / الكوب / القطعة</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label id="qty-label" class="form-label">الكمية المطلوبة:</label>
+                                <input type="number" id="quantity-input" class="form-control" value="100" min="1" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-neon-green w-100">
+                                <i class="fa-solid fa-plus-circle me-1"></i> إضافة لقائمة اليوم
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary & Table Container -->
+                <div class="col-lg-7">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <i class="fa-solid fa-fire-flame-curved fa-2x text-danger mb-2"></i>
+                                <div class="text-muted small">إجمالي السعرات</div>
+                                <div id="total-calories" class="stat-value">0</div>
+                                <div class="small text-white">سعرة حرارية</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <i class="fa-solid fa-scale-balanced fa-2x text-info mb-2"></i>
+                                <div class="text-muted small">إجمالي الحجم / الوزن</div>
+                                <div id="total-grams" class="stat-value" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); --webkit-background-clip: text;">0</div>
+                                <div class="small text-white">جرام / مل</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="section-title mb-0">
+                                <i class="fa-solid fa-list-check"></i>
+                                <span>جدول الوجبات المضافة</span>
+                            </div>
+                            <button id="clear-all-btn" class="btn btn-sm btn-outline-danger">
+                                <i class="fa-solid fa-trash me-1"></i> تفريغ
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle mb-0 text-white">
+                                <thead>
+                                    <tr>
+                                        <th>الصنف</th>
+                                        <th>الحصة / الوزن</th>
+                                        <th>السعرات</th>
+                                        <th class="text-center">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="food-list-body">
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-white">قائمتك فارغة الآن. ابدأي بإضافة وجباتك ومشروباتك!</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive AI Chat Section -->
+        <section id="chat-section" class="mb-5">
+            <div class="glass-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-robot text-info"></i>
+                    <span>NutriBot - مستشارك التغذوي الذكي</span>
+                </div>
+                <div class="chat-box d-flex flex-column" id="chat-box">
+                    <div class="chat-msg bot">أهلاً بكِ! أنا مساعدكِ في NutriFit. كيف يمكنني مساعدتكِ اليوم في نظامكِ الغذائي؟ (سواء للتخسيس، زيادة الوزن، أو الأكل الصحي).</div>
+                </div>
+                <div class="d-flex gap-2 mb-2 flex-wrap">
+                    <button class="btn btn-sm btn-outline-info quick-btn" onclick="quickAsk('عايزة أكلات بتخسس وسعراتها قليلة')">أكلات للتخسيس</button>
+                    <button class="btn btn-sm btn-outline-warning quick-btn" onclick="quickAsk('عايزة أكلات بتزود الوزن وبصحة')">أكلات لزيادة الوزن</button>
+                    <button class="btn btn-sm btn-outline-success quick-btn" onclick="quickAsk('ازاي أحسب احتياجي اليومي من السعرات؟')">حساب الاحتياج</button>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="chat-input" class="form-control" placeholder="اكتبي سؤالك هنا واستفسري عن أي وجبة...">
+                    <button class="btn btn-neon-green" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blogs & Articles Section -->
+        <section id="blogs-section" class="mb-5">
+            <div class="section-title mb-4">
+                <i class="fa-solid fa-newspaper text-warning"></i>
+                <span>دليل التغذية والمدونات (اضغطي لقراءة المقال)</span>
+            </div>
+            <div class="row g-4">
+                <!-- Blog 1 -->
+                <div class="col-md-4">
+                    <div class="blog-card p-3 d-flex flex-column justify-content-between" onclick="openBlog(1)">
+                        <div>
+                            <span class="tag-badge tag-weight-loss mb-2 d-inline-block">التخسيس وحرق الدهون</span>
+                            <h5 class="mt-2">الدليل الشامل لحرق الدهون وتحقيق الوزن المثالي</h5>
+                            <p class="small">تعرفي على قواعد عجز السعرات، البروتين والألياف، وكيفية حرق الدهون بدون حرمان أو فقدان للعضلات.</p>
+                        </div>
+                        <div class="d-flex justify-content-between small mt-3 text-white">
+                            <span><i class="fa-solid fa-clock me-1"></i> قراءة 4 دقائق</span>
+                            <span class="text-info fw-bold">اقرأ الآن <i class="fa-solid fa-arrow-left"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Blog 2 -->
+                <div class="col-md-4">
+                    <div class="blog-card p-3 d-flex flex-column justify-content-between" onclick="openBlog(2)">
+                        <div>
+                            <span class="tag-badge tag-weight-gain mb-2 d-inline-block">النشويات والتغذية</span>
+                            <h5 class="mt-2">دليل النشويات الصحيحة: بين التخسيس والتضخيم</h5>
+                            <p class="small">مقارنة شاملة بين النشويات المعقدة والبسيطة، وأيها الأفضل للشبع المستمر وإمداد الجسم باللازم.</p>
+                        </div>
+                        <div class="d-flex justify-content-between small mt-3 text-white">
+                            <span><i class="fa-solid fa-clock me-1"></i> قراءة 3 دقائق</span>
+                            <span class="text-info fw-bold">اقرأ الآن <i class="fa-solid fa-arrow-left"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Blog 3 -->
+                <div class="col-md-4">
+                    <div class="blog-card p-3 d-flex flex-column justify-content-between" onclick="openBlog(3)">
+                        <div>
+                            <span class="tag-badge tag-healthy mb-2 d-inline-block">أسلوب حياة صحي</span>
+                            <h5 class="mt-2">سر المشروبات والقهوة في ضبط عملية الأيض</h5>
+                            <p class="small">كيف تؤثر القهوة والشاي الأخضر والماء على معدل حرق الدهون اليومي وكيفية استخدامها بذكاء.</p>
+                        </div>
+                        <div class="d-flex justify-content-between small mt-3 text-white">
+                            <span><i class="fa-solid fa-clock me-1"></i> قراءة 2 دقيقة</span>
+                            <span class="text-info fw-bold">اقرأ الآن <i class="fa-solid fa-arrow-left"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Full View Modal -->
+        <div class="modal fade" id="blogModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content glass-card">
+                    <div class="modal-header border-bottom border-secondary">
+                        <h5 class="modal-title fw-bold text-info" id="blogModalTitle">عنوان المقال</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-white" id="blogModalBody" style="line-height: 1.8; max-height: 70vh; overflow-y: auto;">
+                        <!-- Blog content dynamically loaded -->
+                    </div>
+                    <div class="modal-footer border-top border-secondary">
+                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">إغلاق المقال</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews & Community Section -->
+        <section id="reviews-section" class="mb-5">
+            <div class="glass-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-comments text-pink" style="color: var(--neon-pink);"></i>
+                    <span>تجارب وآراء المجتمع</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="reviews-list">
+                            <div class="review-item">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-white">سارة أحمد</strong>
+                                    <span class="text-warning small"><i class="fa-solid fa-star"></i> 5/5</span>
+                                </div>
+                                <p class="small mb-0">"خسيت 7 كيلو لما بدأت أتابع سعرات القهوة والوجبات اليومية بانتظام. الموقع ده سهل عليا كتير جداً!"</p>
+                            </div>
+                            <div class="review-item" style="border-right-color: var(--neon-amber);">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-white">محمد علي</strong>
+                                    <span class="text-warning small"><i class="fa-solid fa-star"></i> 5/5</span>
+                                </div>
+                                <p class="small mb-0">"كنت بعاني عشان أزود وزني، ومن المقالات والحاسبة عرفت أختار وجبات عالية السعرات ونظامي اتغير تماماً."</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <form id="review-form" class="bg-dark p-3 rounded-4 border border-secondary">
+                            <h6 class="fw-bold mb-3 text-white"><i class="fa-solid fa-pen me-1"></i> شاركينا تجربتك ورأيك:</h6>
+                            <div class="mb-2">
+                                <input type="text" id="rev-name" class="form-control form-control-sm" placeholder="اسمكِ" required>
+                            </div>
+                            <div class="mb-2">
+                                <textarea id="rev-text" class="form-control form-control-sm" rows="3" placeholder="اكتبي تجربتك أو رأيك هنا..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-neon-green w-100">نشر التجربة</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        const foodsData = [
+            // النشويات والخبز (carbs)
+            { id: 201, name: "أرز أبيض مطبوخ", category: "carbs", calPer100g: 130, portionName: "كوب أرز مطبوخ", portionGrams: 150 },
+            { id: 202, name: "أرز بني مطبوخ (معقد)", category: "carbs", calPer100g: 112, portionName: "كوب أرز بني", portionGrams: 150 },
+            { id: 203, name: "أرز بسمتي مطبوخ", category: "carbs", calPer100g: 120, portionName: "كوب أرز بسمتي", portionGrams: 150 },
+            { id: 204, name: "أرز بشعيرية", category: "carbs", calPer100g: 145, portionName: "كوب أرز", portionGrams: 150 },
+            { id: 205, name: "مكرونة مسلوقة (بدون زيت)", category: "carbs", calPer100g: 131, portionName: "كوب مكرونة", portionGrams: 140 },
+            { id: 206, name: "مكرونة بالصلصة / بالبشاميل", category: "carbs", calPer100g: 195, portionName: "قطعة / كوب", portionGrams: 180 },
+            { id: 207, name: "بطاطس مسلوقة", category: "carbs", calPer100g: 87, portionName: "حبة متوسطة", portionGrams: 150 },
+            { id: 208, name: "بطاطس مقلية (شيبس/فرايز)", category: "carbs", calPer100g: 312, portionName: "طبق صغير", portionGrams: 100 },
+            { id: 209, name: "بطاطا حلوة مشوية", category: "carbs", calPer100g: 90, portionName: "حبة متوسطة", portionGrams: 130 },
+            { id: 210, name: "شوفان كامل الحبة (جاف)", category: "carbs", calPer100g: 389, portionName: "4 ملاعق كبيرة", portionGrams: 40 },
+            { id: 211, name: "خبز بلدي (عربي/مصر)", category: "carbs", calPer100g: 255, portionName: "رغيف بلدي", portionGrams: 90 },
+            { id: 212, name: "خبز أسمر / سن", category: "carbs", calPer100g: 220, portionName: "رغيف أسمر", portionGrams: 80 },
+            { id: 213, name: "خبز توست أبيض", category: "carbs", calPer100g: 265, portionName: "شريحة توست", portionGrams: 30 },
+            { id: 214, name: "خبز توست بني / أسمر", category: "carbs", calPer100g: 247, portionName: "شريحة توست", portionGrams: 30 },
+            { id: 215, name: "خبز فينو / صامولي", category: "carbs", calPer100g: 280, portionName: "رغيف فينو", portionGrams: 60 },
+            { id: 216, name: "كينوا مطبوخة", category: "carbs", calPer100g: 120, portionName: "كوب كينوا", portionGrams: 140 },
+            { id: 217, name: "فريك مطبوخ", category: "carbs", calPer100g: 130, portionName: "كوب فريك", portionGrams: 150 },
+            { id: 218, name: "برغل مطبوخ", category: "carbs", calPer100g: 83, portionName: "كوب برغل", portionGrams: 150 },
+            { id: 219, name: "ذرة مسلوقة / مشوية", category: "carbs", calPer100g: 96, portionName: "كوز ذرة", portionGrams: 150 },
+            { id: 220, name: "كسكسي مطبوخ", category: "carbs", calPer100g: 112, portionName: "كوب كسكسي", portionGrams: 150 },
+
+            // الفواكه الطازجة (fruits)
+            { id: 401, name: "تفاح أخضر أو أحمر", category: "fruits", calPer100g: 52, portionName: "تفاحة متوسطة", portionGrams: 150 },
+            { id: 402, name: "موز طازج", category: "fruits", calPer100g: 89, portionName: "ثمرة موز متوسطة", portionGrams: 120 },
+            { id: 403, name: "برتقال بلدي / أبو سرة", category: "fruits", calPer100g: 47, portionName: "ثمرة برتقال", portionGrams: 140 },
+            { id: 404, name: "بطيخ أحمر طازج", category: "fruits", calPer100g: 30, portionName: "شريحة بطيخ", portionGrams: 200 },
+            { id: 405, name: "مانجو طازجة", category: "fruits", calPer100g: 60, portionName: "ثمرة مانجو متوسطة", portionGrams: 150 },
+            { id: 406, name: "فراولة طازجة", category: "fruits", calPer100g: 32, portionName: "كوب فراولة", portionGrams: 150 },
+            { id: 407, name: "توت أزرق أو أحمر", category: "fruits", calPer100g: 57, portionName: "كوب توت", portionGrams: 140 },
+            { id: 408, name: "عنب (أخضر أو أحمر)", category: "fruits", calPer100g: 69, portionName: "عنقود صغير / كوب", portionGrams: 150 },
+            { id: 409, name: "تمر / بلح (رطب أو جاف)", category: "fruits", calPer100g: 282, portionName: "3 تمرات", portionGrams: 24 },
+            { id: 410, name: "كيوي طازج", category: "fruits", calPer100g: 61, portionName: "ثمرة كيوي", portionGrams: 75 },
+            { id: 411, name: "رمان تفريغ حبات", category: "fruits", calPer100g: 83, portionName: "كوب حبوب رمان", portionGrams: 150 },
+
+            // القهوة والمشروبات الساخنة (coffee)
+            { id: 1, name: "قهوة عربية (بدون سكر)", category: "coffee", calPer100g: 2, portionName: "فنجان قهوة عربية", portionGrams: 50 },
+            { id: 2, name: "قهوة تركية / سادة", category: "coffee", calPer100g: 5, portionName: "فنجان قهوة تركي", portionGrams: 60 },
+            { id: 3, name: "قهوة تركية مع سكر", category: "coffee", calPer100g: 35, portionName: "فنجان قهوة محلى", portionGrams: 60 },
+            { id: 4, name: "إسبريسو (Espresso)", category: "coffee", calPer100g: 9, portionName: "شوت إسبريسو", portionGrams: 30 },
+            { id: 5, name: "كابتشينو (بحليب كامل الدسم)", category: "coffee", calPer100g: 55, portionName: "كوب كابتشينو", portionGrams: 200 },
+            { id: 7, name: "لاتيه / كافيه لاتيه", category: "coffee", calPer100g: 60, portionName: "كوب لاتيه", portionGrams: 240 },
+            { id: 8, name: "موكا (مع الشوكولاتة)", category: "coffee", calPer100g: 90, portionName: "كوب موكا", portionGrams: 240 },
+
+            // المشروبات الباردة والعصائر (drinks)
+            { id: 50, name: "عصير برتقال طازج", category: "drinks", calPer100g: 45, portionName: "كوب عصير برتقال", portionGrams: 240 },
+            { id: 51, name: "عصير مانجو طازج", category: "drinks", calPer100g: 65, portionName: "كوب عصير مانجو", portionGrams: 240 },
+            { id: 53, name: "مشروبات غازية (كولا/سفن)", category: "drinks", calPer100g: 42, portionName: "علبة كان (355 مل)", portionGrams: 355 },
+
+            // الطيور والدواجن (poultry)
+            { id: 101, name: "دجاج مشوي (بدون جلد)", category: "poultry", calPer100g: 165, portionName: "صدر دجاج", portionGrams: 150 },
+            { id: 102, name: "دجاج مشوي (بالجلد)", category: "poultry", calPer100g: 220, portionName: "ورك دجاج", portionGrams: 150 },
+            { id: 103, name: "دجاج مقلي (بروستد)", category: "poultry", calPer100g: 290, portionName: "قطعة بروستد", portionGrams: 120 },
+            { id: 104, name: "حمام محشي أرز", category: "poultry", calPer100g: 210, portionName: "فردة حمام", portionGrams: 250 },
+            { id: 106, name: "بط محمر / مشوي", category: "poultry", calPer100g: 330, portionName: "ناب بطة", portionGrams: 200 },
+
+            // الحلويات والكيك (sweets)
+            { id: 301, name: "كيك شوكولاتة", category: "sweets", calPer100g: 370, portionName: "قطعة كيك", portionGrams: 80 },
+            { id: 307, name: "كنافة بالمكسرات", category: "sweets", calPer100g: 380, portionName: "قطعة كنافة", portionGrams: 100 },
+            { id: 310, name: "سينابون", category: "sweets", calPer100g: 390, portionName: "قطعة سينابون", portionGrams: 120 }
+        ];
+
+        let selectedFoodList = [];
+
+        // Elements
+        const categoryFilter = document.getElementById('category-filter');
+        const searchInput = document.getElementById('search-input');
+        const foodSelect = document.getElementById('food-select');
+        const quantityInput = document.getElementById('quantity-input');
+        const qtyLabel = document.getElementById('qty-label');
+        const calcForm = document.getElementById('calc-form');
+        const foodListBody = document.getElementById('food-list-body');
+        const totalCaloriesEl = document.getElementById('total-calories');
+        const totalGramsEl = document.getElementById('total-grams');
+
+        function renderFoodSelect() {
+            const cat = categoryFilter.value;
+            const search = searchInput.value.trim().toLowerCase();
+            foodSelect.innerHTML = '';
+
+            const filtered = foodsData.filter(item => {
+                const matchesCat = (cat === 'all' || item.category === cat);
+                const matchesSearch = item.name.toLowerCase().includes(search);
+                return matchesCat && matchesSearch;
+            });
+
+            if(filtered.length === 0) {
+                foodSelect.innerHTML = '<option disabled class="p-2 text-white">لا توجد نتائج مطابقة</option>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.className = 'p-2 border-bottom border-secondary text-white';
+                opt.innerHTML = `${item.name} (${item.calPer100g} سعرة / 100g)`;
+                foodSelect.appendChild(opt);
+            });
+
+            if (foodSelect.options.length > 0 && !foodSelect.options[0].disabled) {
+                foodSelect.selectedIndex = 0;
+                updateQtyLabel();
+            }
+        }
+
+        function updateQtyLabel() {
+            const mode = document.querySelector('input[name="calc-mode"]:checked').value;
+            const selectedId = parseInt(foodSelect.value);
+            const food = foodsData.find(f => f.id === selectedId);
+
+            if (mode === 'grams') {
+                qtyLabel.innerText = 'الكمية بالجرام أو المللي:';
+            } else {
+                qtyLabel.innerText = food ? `عدد الحصص (${food.portionName}):` : 'عدد الحصص:';
+            }
+        }
+
+        calcForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const selectedId = parseInt(foodSelect.value);
+            if (!selectedId) return;
+
+            const food = foodsData.find(f => f.id === selectedId);
+            const mode = document.querySelector('input[name="calc-mode"]:checked').value;
+            const qtyVal = parseFloat(quantityInput.value);
+
+            if (!qtyVal || qtyVal <= 0) return;
+
+            let grams = (mode === 'grams') ? qtyVal : food.portionGrams * qtyVal;
+            let calories = Math.round((food.calPer100g / 100) * grams);
+            let displayQty = (mode === 'grams') ? `${qtyVal} جرام` : `${qtyVal} ${food.portionName}`;
+
+            selectedFoodList.push({ listId: Date.now(), name: food.name, displayQty, grams, calories });
+            updateTable();
+        });
+
+        function updateTable() {
+            foodListBody.innerHTML = '';
+            if (selectedFoodList.length === 0) {
+                foodListBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-white">قائمتك فارغة الآن. ابدأي بإضافة وجباتك ومشروباتك!</td></tr>`;
+                totalCaloriesEl.innerText = 0;
+                totalGramsEl.innerText = 0;
+                return;
+            }
+
+            let totalCals = 0, totalGrams = 0;
+            selectedFoodList.forEach(item => {
+                totalCals += item.calories;
+                totalGrams += item.grams;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="fw-bold text-white">${item.name}</td>
+                    <td><span class="badge bg-secondary">${item.displayQty}</span></td>
+                    <td class="text-danger fw-bold">${item.calories} سعرة</td>
+                    <td class="text-center"><button onclick="removeItem(${item.listId})" class="btn btn-sm btn-outline-danger py-0 px-2">&times;</button></td>
+                `;
+                foodListBody.appendChild(tr);
+            });
+
+            totalCaloriesEl.innerText = totalCals;
+            totalGramsEl.innerText = totalGrams;
+        }
+
+        function removeItem(id) {
+            selectedFoodList = selectedFoodList.filter(i => i.listId !== id);
+            updateTable();
+        }
+
+        document.getElementById('clear-all-btn').addEventListener('click', () => {
+            selectedFoodList = [];
+            updateTable();
+        });
+
+        categoryFilter.addEventListener('change', renderFoodSelect);
+        searchInput.addEventListener('input', renderFoodSelect);
+        foodSelect.addEventListener('change', updateQtyLabel);
+        document.querySelectorAll('input[name="calc-mode"]').forEach(r => r.addEventListener('change', updateQtyLabel));
+
+        // Interactive Bot Logic
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text) return;
+
+            appendChat(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                let response = "سؤال ممتاز! للحصول على أفضل نتائج، ركزي على تناول البروتين الكافي وشرب الماء بانتظام، مع حساب السعرات الحرارية اليومية.";
+                if(text.includes('تخسيس') || text.includes('أخس')) {
+                    response = "للتخسيس: ركزي على الأطعمة المنخفضة السعرات والمرتفعة بالبروتين والألياف مثل الصدور المشوية، الشوفان، السلطة، والبطاطس المسلوقة بدلاً من المقلية.";
+                } else if(text.includes('نشويات') || text.includes('رز') || text.includes('عيش')) {
+                    response = "النشويات ليست عدوكِ! اختاري النشويات المعقدة مثل الأرز البني، الشوفان، البطاطا الحلوة، والخبز الأسمر لأنها تمنحكِ شبعاً أطول وطاقة مستمرة.";
+                } else if(text.includes('زيادة') || text.includes('أتخن')) {
+                    response = "لزيادة الوزن بصحة: تناولي المكسرات، زبدة الفول السوداني، التمر، القهوة بالحليب كامل الدسم، وأضيفي الأرز والبطاطس لوجباتك الرئيسية.";
+                } else if(text.includes('احتياج') || text.includes('سعرات')) {
+                    response = "لحساب الاحتياج اليومي: يختلف بحسب الوزن والنشاط. للإنقاص اخصمي 500 سعرة من احتياجك اليومي، وللزيادة أضيفي 500 سعرة.";
+                }
+                appendChat(response, 'bot');
+            }, 600);
+        }
+
+        function quickAsk(msg) {
+            document.getElementById('chat-input').value = msg;
+            sendChatMessage();
+        }
+
+        function appendChat(msg, sender) {
+            const box = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `chat-msg ${sender}`;
+            div.innerText = msg;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // Blog Data & Modal Logic
+        const blogsDatabase = {
+            1: {
+                title: "الدليل الشامل لحرق الدهون وتحقيق الوزن المثالي",
+                content: `
+                    <h5>1. قاعدة عجز السعرات الحرارية (Caloric Deficit)</h5>
+                    <p>المفهوم الأساسي لحرق الدهون هو حرق سعرات حرارية أكثر مما تستهلكين يومياً. عندما يحدث هذا العجز، يضطر الجسم لاستخدام الدهون المخزنة كمصدر رئيسي للطاقة.</p>
+                    
+                    <h5>2. التركيز على البروتين والألياف</h5>
+                    <p>البروتين يساعد على بناء الكتلة العضلية والمحافظة عليها أثناء الدايت، كما يزيد من معدل الحرق اليومي. الألياف (مثل الشوفان والخضروات) تمنحكِ شعوراً بالشبع لفترات طويلة وتضبط مستويات السكر.</p>
+                    
+                    <h5>3. الرياضة وحرق الدهون</h5>
+                    <p>تمارين المقاومة والحديد ضرورية جداً لحماية عضلاتكِ. ممارسة تمارين الكارديو أو المشي 8000 إلى 10000 خطوة يومياً تُسرع عملية إنقاص الوزن بشكل صحي ومستدام.</p>
+                `
+            },
+            2: {
+                title: "دليل النشويات الصحيحة: بين التخسيس والتضخيم",
+                content: `
+                    <h5>1. الفرق بين النشويات البسيطة والمعقدة</h5>
+                    <p>النشويات المعقدة (مثل الأرز البني، الشوفان، البطاطا الحلوة، الفريك، والبرغل) تهضم ببطء وتوفر طاقة مستدامة دون رفع مفاجئ لسكر الدم، وهي الخيار المثالي للتخسيس والتنشيف.</p>
+                    
+                    <h5>2. كيف تختارين نشوياتك بحسب هدفك؟</h5>
+                    <p>إذا كان هدفكِ إنقاص الوزن: اختاري البطاطس المسلوقة والشوفان والخبز الأسمر بحصص محسوبة.<br>إذا كان هدفكِ زيادة الوزن والكتلة العضلية: الأرز الأبيض، المكرونة، والبطاطس المهروسة تتيح لكِ استهلاك سعرات أكبر بسهولة.</p>
+                `
+            },
+            3: {
+                title: "سر المشروبات والقهوة في ضبط عملية الأيض",
+                content: `
+                    <h5>1. القهوة ومعدل الحرق</h5>
+                    <p>تحتوي القهوة على الكافيين ومضادات الأكسدة التي تزيد من معدل الأيض بنسبة 3-11%. القهوة العربية والإسبريسو خيارات ممتازة جداً لخلوها من السعرات حرارية (إذا كانت بدون سكر أو مبيضات صناعية).</p>
+                    
+                    <h5>2. شرب الماء الكافي</h5>
+                    <p>تناول 2 إلى 3 لترات من الماء يومياً ينشط عمليات الأيض ويقلل من الاحتباس السائلي بالجسم. تناول كوبين ماء قبل كل وجبة يقلل من كمية الطعام المتناولة تلقائياً.</p>
+                `
+            }
+        };
+
+        function openBlog(id) {
+            const blog = blogsDatabase[id];
+            if(blog) {
+                document.getElementById('blogModalTitle').innerText = blog.title;
+                document.getElementById('blogModalBody').innerHTML = blog.content;
+                const modal = new bootstrap.Modal(document.getElementById('blogModal'));
+                modal.show();
+            }
+        }
+
+        // Community Reviews Form
+        document.getElementById('review-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('rev-name').value;
+            const text = document.getElementById('rev-text').value;
+
+            const div = document.createElement('div');
+            div.className = 'review-item';
+            div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <strong class="text-white">${name}</strong>
+                    <span class="text-warning small"><i class="fa-solid fa-star"></i> 5/5</span>
+                </div>
+                <p class="small mb-0 text-white">"${text}"</p>
+            `;
+            document.getElementById('reviews-list').prepend(div);
+            document.getElementById('review-form').reset();
+        });
+
+        renderFoodSelect();
+    </script>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
